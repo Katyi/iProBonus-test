@@ -9,7 +9,7 @@ import icon5 from './assets/icon5.svg';
 import icon6 from './assets/icon6.svg';
 
 function App() {
-  type AccessTokenType = {
+  interface AccessTokenType {
     idClient: string;
     accessToken: string;
     paramName: string;
@@ -19,7 +19,7 @@ function App() {
     sourceQuery: number;
   };
 
-  type BonusData = {
+  interface BonusData {
     typeBonusName: string;
     currentQuantity: number;
     forBurningQuantity: number;
@@ -34,19 +34,15 @@ function App() {
   });
   const [dateBurning, setDateBurning] = useState<string>("");
 
-  
-
-
-  
   async function getBonusData() {
     try {
       const { data, status } = await axios.post<AccessTokenType>(
-        'http://84.201.188.117:5021/api/v3/clients/accesstoken',
+        `${import.meta.env.VITE_BASE_URL}`,
         {
-          idClient: "2c44d8c2-c89a-472e-aab3-9a8a29142315",
+          idClient: import.meta.env.VITE_CLIENT_ID,
           accessToken: "",
           paramName: "device",
-          paramValue: "7db72635-fd0a-46b9-813b-1627e3aa02ea",
+          paramValue: import.meta.env.VITE_DEVICE_ID,
           latitude: 0,
           longitude: 0,
           sourceQuery: 0
@@ -54,20 +50,21 @@ function App() {
         {
           headers: {
             'Content-Type': 'application/json',
-            AccessKey: '891cf53c-01fc-4d74-a14c-592668b7a03c',
+            AccessKey: import.meta.env.VITE_ACCESS_KEY,
           },
         },
       );
   
       let accessToken: string =  data.accessToken;
+      console.log(status);
       console.log(accessToken);
       
       try {
         const { data, status } = await axios.get(
-          `http://84.201.188.117:5003/api/v3/ibonus/generalinfo/${accessToken}`,
+          `${import.meta.env.VITE_SECOND_URL}${accessToken}`,
           {
             headers: {
-              AccessKey: '891cf53c-01fc-4d74-a14c-592668b7a03c',
+              AccessKey: import.meta.env.VITE_ACCESS_KEY,
             },
           },
         );
